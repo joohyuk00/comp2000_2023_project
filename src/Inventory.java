@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class Inventory {
     protected ArrayList<ItemInterface> stock;
+    private static final int ITEM_NOT_FOUND = -1;
 
     public Inventory() {
         stock = new ArrayList<>();
@@ -23,6 +24,7 @@ public class Inventory {
         }
     }
 
+    
     public ArrayList<ItemInterface> getStock() {
         return stock;
     }
@@ -43,8 +45,9 @@ public class Inventory {
      */
     public ItemInterface removeOne(String itemName) {   
         int removeFromIdx = indexOfItemByName(itemName);
-        if (removeFromIdx == -1) {
-            return null;
+        if (removeFromIdx == ITEM_NOT_FOUND) {
+            //return null;
+            throw new IllegalArgumentException("Item not found: " + itemName);
         }
 
         return stock.remove((int) removeFromIdx);
@@ -62,7 +65,7 @@ public class Inventory {
                 return i;
             }
         }
-        return -1;
+        return ITEM_NOT_FOUND;
     }
 
 }

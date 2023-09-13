@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 
 public class Basket implements BasketInterface {
+    private static final int QUANTITY_INCREMENT = 1;
+    private static final int ITEM_NOT_FOUND = -1;
     ArrayList<ItemInterface> items;
     ArrayList<Integer> quantities;
 
@@ -15,7 +17,7 @@ public class Basket implements BasketInterface {
                 return i;
             }
         }
-        return -1;
+        return ITEM_NOT_FOUND;
     }
 
     public ArrayList<CartTableRow> getRowData() {
@@ -39,10 +41,10 @@ public class Basket implements BasketInterface {
     public void add(ItemInterface item) {
         int index = itemIndex(item.getInventoryTableRow().getColumnOne());
         if (index != -1) {
-            quantities.set(index, quantities.get(index) + 1);
+            quantities.set(index, quantities.get(index) + QUANTITY_INCREMENT);
         } else {
             items.add(item);
-            quantities.add(1);
+            quantities.add(QUANTITY_INCREMENT);
         }
     }
 
@@ -92,8 +94,9 @@ public class Basket implements BasketInterface {
             for (int q = 0; q < quantities.get(i); q++) {
                 ItemInterface saleItem = from.sell(items.get(i).getInventoryTableRow().getColumnOne());
                 if (saleItem == null) {
-                    rollback = true;
-                    break;  // Trigger transaction rollback
+                    throw new IllegalArgumentException("Unable to sell item: " + items.get(i).getInventoryTableRow().getColumnOne());
+                    //rollback = true;
+                    //break;  // Trigger transaction rollback
                 }
                 transactionItems.add(saleItem);
             }
